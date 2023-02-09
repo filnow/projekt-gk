@@ -1,10 +1,44 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (grk-cw3.vcxproj, grk-cw4.vcxproj, grk-cw5.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Using triplet "x86-windows" from "C:\Users\Andrzej\Desktop\openvdb\vcpkg\installed\x86-windows\"
+﻿c:\software\vs19\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (grk-cw3.vcxproj, grk-cw4.vcxproj, grk-cw5.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Box.cpp
+  Camera.cpp
   main.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\Andrzej\Desktop\grk\2021\grk glfw test\dependencies\glfw-3.3.8.bin.WIN32\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
-C:\Users\Andrzej\Desktop\grk\2021\grk glfw test\cw 6\src\ex_6_1.hpp(52,16): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\Andrzej\Desktop\grk\2021\grk glfw test\cw 6\src\ex_6_1.hpp(86,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+j:\Desktop\projekt-gk\dependencies\glfw-3.3.8.bin.WIN32\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
+j:\Desktop\projekt-gk\cw 6\src\ex_6_1.hpp(70,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+j:\Desktop\projekt-gk\cw 6\src\ex_6_1.hpp(103,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Render_Utils.cpp
+  Shader_Loader.cpp
+  Texture.cpp
+  Generating Code...
+  image_DXT.c
+j:\Desktop\projekt-gk\cw 6\src\SOIL\image_DXT.c(92,9): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  image_helper.c
+j:\Desktop\projekt-gk\cw 6\src\SOIL\image_helper.c(325,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+j:\Desktop\projekt-gk\cw 6\src\SOIL\image_helper.c(366,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+j:\Desktop\projekt-gk\cw 6\src\SOIL\image_helper.c(373,46): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+j:\Desktop\projekt-gk\cw 6\src\SOIL\image_helper.c(415,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+j:\Desktop\projekt-gk\cw 6\src\SOIL\image_helper.c(422,62): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  SOIL.c
+j:\Desktop\projekt-gk\cw 6\src\SOIL\SOIL.c(1719,36): warning C4018: '<=': signed/unsigned mismatch
+j:\Desktop\projekt-gk\cw 6\src\SOIL\SOIL.c(1729,19): warning C4018: '<': signed/unsigned mismatch
+j:\Desktop\projekt-gk\cw 6\src\SOIL\SOIL.c(1841,6): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  stb_image_aug.c
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(177,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(251,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(303,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(1557,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(2394,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(2709,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(2995,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(3209,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(3548,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stb_image_aug.c(3644,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stbi_DDS_aug_c.h(362,19): warning C4018: '>': signed/unsigned mismatch
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stbi_DDS_aug_c.h(366,19): warning C4018: '>': signed/unsigned mismatch
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stbi_DDS_aug_c.h(390,19): warning C4018: '<': signed/unsigned mismatch
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stbi_DDS_aug_c.h(427,19): warning C4018: '<': signed/unsigned mismatch
+j:\Desktop\projekt-gk\cw 6\src\SOIL\stbi_DDS_aug_c.h(498,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  Generating Code...
 Box.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  grk-cw6.vcxproj -> C:\Users\Andrzej\Desktop\grk\2021\grk glfw test\Debug\grk-cw6.exe
+  grk-cw6.vcxproj -> j:\Desktop\projekt-gk\Debug\grk-cw6.exe
