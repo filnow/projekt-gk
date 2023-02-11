@@ -36,6 +36,23 @@ namespace models {
 	Core::RenderContext ceilingfanContext;
 	Core::RenderContext chair1Context;
 	Core::RenderContext chair2Context;
+	Core::RenderContext wall1Context;
+	Core::RenderContext wall2Context;
+	Core::RenderContext wall3Context;
+	Core::RenderContext wall4Context;
+
+}
+
+namespace texture {
+	GLuint kot;
+	GLuint wood_floor;
+	GLuint table;
+	GLuint wallpaper;
+	GLuint materace;
+	GLuint chairs;
+	GLuint metal;
+	GLuint bed;
+
 }
 
 GLuint depthMapFBO;
@@ -159,6 +176,21 @@ void drawObjectPBR(Core::RenderContext& context, glm::mat4 modelMatrix, glm::vec
 
 }
 
+
+void drawObjectTexture(Core::RenderContext& context, glm::mat4 modelMatrix, GLuint texturePath, int nbr) {
+
+	glm::mat4 viewProjectionMatrix = createPerspectiveMatrix() * createCameraMatrix();
+	glm::mat4 transformation = viewProjectionMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(programTex, "transformation"), 1, GL_FALSE, (float*)&transformation);
+	glUniformMatrix4fv(glGetUniformLocation(programTex, "modelMatrix"), 1, GL_FALSE, (float*)&modelMatrix);
+	glUniform1i(glGetUniformLocation(programTex, "nbr"), nbr);
+	Core::SetActiveTexture(texturePath, "colorTexture", programTex, 0);
+	
+	Core::DrawContext(context);
+
+}
+
+
 void renderShadowapSun() {
 	float time = glfwGetTime();
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -181,30 +213,31 @@ void renderScene(GLFWwindow* window)
 	updateDeltaTime(time);
 	renderShadowapSun();
 
+	
 
-	glUseProgram(program);
+	glUseProgram(programTex);
+	drawObjectTexture(models::bedContext, glm::mat4(), texture::bed, 10);
+	drawObjectTexture(models::planeContext, glm::mat4(), texture::wood_floor, 30);
+	drawObjectTexture(models::materaceContext, glm::mat4(), texture::materace, 20);
+	drawObjectTexture(models::roomContext, glm::mat4(), texture::wallpaper, 1);
+	drawObjectTexture(models::wall1Context, glm::mat4(), texture::wallpaper, 1);
+	drawObjectTexture(models::wall2Context, glm::mat4(), texture::wallpaper, 1);
+	drawObjectTexture(models::wall3Context, glm::mat4(), texture::wallpaper, 1);
+	drawObjectTexture(models::wall4Context, glm::mat4(), texture::wallpaper, 1);
 
 
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
 	trans = glm::rotate(trans, (float)glfwGetTime() * 2, glm::vec3(0.0f, 1.0f, 0.0f));
-
-
-	drawObjectPBR(models::ceilingfanContext, trans, glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-
-
-	drawObjectPBR(models::bedContext, glm::mat4(), glm::vec3(0.03f, 0.03f, 0.03f), 0.2f, 0.0f);
-	drawObjectPBR(models::materaceContext, glm::mat4(), glm::vec3(0.03f, 0.03f, 0.03f), 0.2f, 0.0f);
-	drawObjectPBR(models::tableContext, glm::mat4(), glm::vec3(0.428691f, 0.08022f, 0.036889f), 0.2f, 0.0f);
-	drawObjectPBR(models::doorContext, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::planeContext, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::roomContext, glm::mat4(), glm::vec3(0.9f, 0.9f, 0.9f), 0.8f, 0.0f);
-	drawObjectPBR(models::window1Context, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::window2Context, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::window3Context, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::lampContext, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::chair1Context, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
-	drawObjectPBR(models::chair2Context, glm::mat4(), glm::vec3(0.402978f, 0.120509f, 0.057729f), 0.2f, 0.0f);
+	drawObjectTexture(models::ceilingfanContext, trans, texture::kot, 20);
+	drawObjectTexture(models::tableContext, glm::mat4(), texture::table, 20);
+	drawObjectTexture(models::doorContext, glm::mat4(), texture::metal, 10);
+	drawObjectTexture(models::window1Context, glm::mat4(), texture::table, 1);
+	drawObjectTexture(models::window2Context, glm::mat4(), texture::table, 1);
+	drawObjectTexture(models::window3Context, glm::mat4(), texture::table, 1);
+	drawObjectTexture(models::lampContext, glm::mat4(), texture::kot, 20);
+	drawObjectTexture(models::chair1Context, glm::mat4(), texture::chairs, 1);
+	drawObjectTexture(models::chair2Context, glm::mat4(), texture::chairs, 1);
 
 	glm::vec3 spaceshipSide = glm::normalize(glm::cross(spaceshipDir, glm::vec3(0.f, 1.f, 0.f)));
 	glm::vec3 spaceshipUp = glm::normalize(glm::cross(spaceshipSide, spaceshipDir));
@@ -214,8 +247,6 @@ void renderScene(GLFWwindow* window)
 		-spaceshipDir.x,-spaceshipDir.y,-spaceshipDir.z,0,
 		0.,0.,0.,1.,
 		});
-
-
 
 	drawObjectPBR(shipContext,
 		glm::translate(spaceshipPos) * specshipCameraRotrationMatrix * glm::eulerAngleY(glm::pi<float>()) * glm::scale(glm::vec3(0.03f)),
@@ -262,6 +293,7 @@ void init(GLFWwindow* window)
 	program = shaderLoader.CreateProgram("shaders/shader_9_1.vert", "shaders/shader_9_1.frag");
 	programTest = shaderLoader.CreateProgram("shaders/test.vert", "shaders/test.frag");
 	programSun = shaderLoader.CreateProgram("shaders/shader_8_sun.vert", "shaders/shader_8_sun.frag");
+	programTex = shaderLoader.CreateProgram("shaders/shader_tex.vert", "shaders/shader_tex.frag");
 
 	loadModelToContext("./models/sphere.obj", sphereContext);
 	loadModelToContext("./models/spaceship.obj", shipContext);
@@ -282,6 +314,22 @@ void init(GLFWwindow* window)
 	loadModelToContext("./models/ceilingfan.obj", models::ceilingfanContext);
 	loadModelToContext("./models/chair1.obj", models::chair1Context);
 	loadModelToContext("./models/chair2.obj", models::chair2Context);
+	loadModelToContext("./models/wall1.obj", models::wall1Context);
+	loadModelToContext("./models/wall2.obj", models::wall2Context);
+	loadModelToContext("./models/wall3.obj", models::wall3Context);
+	loadModelToContext("./models/wall4.obj", models::wall4Context);
+
+
+
+	texture::kot = Core::LoadTexture("./textures/toksa2.png");
+	texture::wood_floor = Core::LoadTexture("./textures/wood_floor.jpg");
+	texture::table = Core::LoadTexture("./textures/table.jpg");
+	texture::wallpaper = Core::LoadTexture("./textures/wallpaper.jpg");
+	texture::materace = Core::LoadTexture("./textures/materace.jpg");
+	texture::chairs = Core::LoadTexture("./textures/chairs.jpg");
+	texture::metal = Core::LoadTexture("./textures/metal.jpg");
+	texture::bed = Core::LoadTexture("./textures/bed.jpg");
+
 }
 
 
