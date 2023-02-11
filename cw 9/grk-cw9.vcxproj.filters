@@ -109,5 +109,17 @@
     <None Include="shaders\test.vert">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="shaders\shaderskybox.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shaderskybox.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_depth.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_depth.vert">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
