@@ -23,6 +23,8 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="particles.cpp" />
+    <ClInclude Include="SimpleParticles.hpp" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ex_9_1.hpp" />
     <ClInclude Include="src\objload.h" />
@@ -37,12 +39,16 @@
     <ClInclude Include="src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\shaderskybox.frag" />
+    <None Include="shaders\shaderskybox.vert" />
     <None Include="shaders\shader_9_1.frag" />
     <None Include="shaders\shader_9_1.vert" />
     <None Include="shaders\shader_8_sun.frag" />
     <None Include="shaders\shader_8_sun.vert" />
-    <None Include="shaders\shader_tex.frag" />
-    <None Include="shaders\shader_tex.vert" />
+    <None Include="shaders\shader_depth.frag" />
+    <None Include="shaders\shader_depth.vert" />
+    <None Include="shaders\shader_particles.frag" />
+    <None Include="shaders\shader_particles.vert" />
     <None Include="shaders\test.frag" />
     <None Include="shaders\test.vert" />
   </ItemGroup>
@@ -58,14 +64,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">

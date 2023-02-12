@@ -1,14 +1,21 @@
 ﻿  main.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\dependencies\glfw-3.3.8.bin.WIN32\include\GLFW\glfw3.h(123): message : zobacz poprzednią definicję „APIENTRY”
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(93,30): warning C4305: "inicjowanie": obcięcie z "double" do "float"
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(107,38): warning C4305: "=": obcięcie z "double" do "float"
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(130,16): warning C4305: "inicjowanie": obcięcie z "double" do "float"
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(195,13): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(212,13): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(255,2): warning C4305: "argument": obcięcie z "double" do "float"
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(372,21): warning C4305: "-=": obcięcie z "double" do "float"
-D:\Kosz2\AAA_Studia\Grafika\projekt-gk\cw 9\src\ex_9_1.hpp(374,21): warning C4305: "+=": obcięcie z "double" do "float"
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\Users\12345\Downloads\grk\dependencies\glfw-3.3.8.bin.WIN32\include\GLFW\glfw3.h(123,1): message : zobacz poprzednią definicję „APIENTRY”
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(40,31): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(41,37): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(212,30): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(225,16): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(246,16): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(281,15): warning C4101: "textureID": lokalna zmienna, do której nie istnieje odwołanie
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(320,38): warning C4305: "=": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(371,13): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(478,14): warning C4244: "argument": konwersja z "float" do "GLubyte", możliwa utrata danych
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(487,13): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(535,2): warning C4305: "argument": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(649,25): warning C4305: "-=": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(651,25): warning C4305: "+=": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(653,21): warning C4305: "-=": obcięcie z "double" do "float"
+C:\Users\12345\Downloads\grk\cw 9\src\ex_9_1.hpp(655,21): warning C4305: "+=": obcięcie z "double" do "float"
 Box.obj : warning LNK4075: zignorowano opcję „/EDITANDCONTINUE” z powodu określenia opcji „/INCREMENTAL:NO”
 LINK : warning LNK4098: domyślna biblioteka „MSVCRT” powoduje konflikt z innymi bibliotekami; użyj opcji /NODEFAULTLIB:biblioteka
-  grk-cw9.vcxproj -> D:\Kosz2\AAA_Studia\Grafika\projekt-gk\Debug\grk-cw9.exe
+  grk-cw9.vcxproj -> C:\Users\12345\Downloads\grk\Debug\grk-cw9.exe
