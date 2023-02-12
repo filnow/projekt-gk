@@ -42,13 +42,13 @@
     <ClCompile Include="src\SOIL\SOIL.c">
       <Filter>Source Files\SOIL</Filter>
     </ClCompile>
-    <ClCompile Include="src\SOIL\stb_image_aug.c">
-      <Filter>Source Files\SOIL</Filter>
-    </ClCompile>
     <ClCompile Include="src\SOIL\image_DXT.c">
       <Filter>Source Files\SOIL</Filter>
     </ClCompile>
     <ClCompile Include="src\SOIL\image_helper.c">
+      <Filter>Source Files\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SOIL\stb_image_aug.c">
       <Filter>Source Files\SOIL</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +74,13 @@
     <ClInclude Include="src\SOIL\SOIL.h">
       <Filter>Source Files\SOIL</Filter>
     </ClInclude>
-    <ClInclude Include="src\SOIL\stb_image_aug.h">
+    <ClInclude Include="src\SOIL\image_DXT.h">
+      <Filter>Source Files\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ex_9_1.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image_aug.h">
       <Filter>Source Files\SOIL</Filter>
     </ClInclude>
     <ClInclude Include="src\SOIL\stbi_DDS_aug.h">
@@ -82,12 +88,6 @@
     </ClInclude>
     <ClInclude Include="src\SOIL\stbi_DDS_aug_c.h">
       <Filter>Source Files\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SOIL\image_DXT.h">
-      <Filter>Source Files\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ex_9_1.hpp">
-      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +113,18 @@
       <Filter>Shader Files</Filter>
     </None>
     <None Include="shaders\shader_tex.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_depth.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_depth.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shaderskybox.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shaderskybox.vert">
       <Filter>Shader Files</Filter>
     </None>
   </ItemGroup>

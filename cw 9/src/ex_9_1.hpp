@@ -5,7 +5,6 @@
 #include <iostream>
 #include <cmath>
 #include "SOIL/SOIL.h"
-
 #include "Shader_Loader.h"
 #include "Render_Utils.h"
 #include "Texture.h"
@@ -15,8 +14,11 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <string>
+#include "SOIL/stb_image_aug.h"
+
 
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
 
 int WIDTH = 500, HEIGHT = 500;
 
@@ -52,7 +54,8 @@ namespace texture {
 	GLuint chairs;
 	GLuint metal;
 	GLuint bed;
-
+	GLuint fan;
+	GLuint lamp;
 }
 
 GLuint depthMapFBO;
@@ -62,6 +65,7 @@ GLuint program;
 GLuint programSun;
 GLuint programTest;
 GLuint programTex;
+GLuint programSkybox;
 
 Core::Shader_Loader shaderLoader;
 
@@ -92,7 +96,36 @@ glm::vec3 spotlightConeDir = glm::vec3(0, 0, 0);
 glm::vec3 spotlightColor = glm::vec3(0.4, 0.4, 0.9) * 3;
 float spotlightPhi = 3.14 / 4;
 
+float skyboxVertices[] =
+{
 
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f
+};
+
+unsigned int skyboxIndices[] =
+{
+	1, 2, 6,
+	6, 5, 1,
+	0, 4, 7,
+	7, 3, 0,
+	4, 5, 6,
+	6, 7, 4,
+	0, 3, 2,
+	2, 1, 0,
+	0, 1, 5,
+	5, 4, 0,
+	3, 7, 6,
+	6, 2, 3
+};
+
+unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 
 float lastTime = -1.f;
 float deltaTime = 0.f;
@@ -217,25 +250,22 @@ void renderScene(GLFWwindow* window)
 
 	glUseProgram(programTex);
 	drawObjectTexture(models::bedContext, glm::mat4(), texture::bed, 10);
-	drawObjectTexture(models::planeContext, glm::mat4(), texture::wood_floor, 30);
+	drawObjectTexture(models::planeContext, glm::mat4(), texture::wood_floor, 10);
 	drawObjectTexture(models::materaceContext, glm::mat4(), texture::materace, 20);
-	drawObjectTexture(models::roomContext, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall1Context, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall2Context, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall3Context, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall4Context, glm::mat4(), texture::wallpaper, 1);
+	drawObjectTexture(models::roomContext, glm::mat4(), texture::wallpaper, 5);
+
 
 
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
 	trans = glm::rotate(trans, (float)glfwGetTime() * 2, glm::vec3(0.0f, 1.0f, 0.0f));
-	drawObjectTexture(models::ceilingfanContext, trans, texture::kot, 20);
-	drawObjectTexture(models::tableContext, glm::mat4(), texture::table, 20);
+	drawObjectTexture(models::ceilingfanContext, trans, texture::fan, 1);
+	drawObjectTexture(models::tableContext, glm::mat4(), texture::table, 1);
 	drawObjectTexture(models::doorContext, glm::mat4(), texture::metal, 10);
 	drawObjectTexture(models::window1Context, glm::mat4(), texture::table, 1);
 	drawObjectTexture(models::window2Context, glm::mat4(), texture::table, 1);
 	drawObjectTexture(models::window3Context, glm::mat4(), texture::table, 1);
-	drawObjectTexture(models::lampContext, glm::mat4(), texture::kot, 20);
+	drawObjectTexture(models::lampContext, glm::mat4(), texture::lamp, 1);
 	drawObjectTexture(models::chair1Context, glm::mat4(), texture::chairs, 1);
 	drawObjectTexture(models::chair2Context, glm::mat4(), texture::chairs, 1);
 
@@ -247,7 +277,7 @@ void renderScene(GLFWwindow* window)
 		-spaceshipDir.x,-spaceshipDir.y,-spaceshipDir.z,0,
 		0.,0.,0.,1.,
 		});
-
+	drawObjectPBR(models::roomContext, glm::mat4(), glm::vec3(), 0.1f, 0.1f);
 	drawObjectPBR(shipContext,
 		glm::translate(spaceshipPos) * specshipCameraRotrationMatrix * glm::eulerAngleY(glm::pi<float>()) * glm::scale(glm::vec3(0.03f)),
 		glm::vec3(0.3, 0.3, 0.5),
@@ -257,9 +287,17 @@ void renderScene(GLFWwindow* window)
 	spotlightPos = spaceshipPos + 0.2 * spaceshipDir;
 	spotlightConeDir = spaceshipDir;
 
+	glUseProgram(programSkybox);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+	view = glm::mat4(glm::mat3(cameraPos, cameraPos + cameraDir, cameraDir));
+	projection = glm::perspective(glm::radians(45.0f), (float)100 / 200, 0.1f, 100.0f);
+	glUniform1i(glGetUniformLocation(programSkybox, "skybox"), 0);
+	glUniformMatrix4fv(glGetUniformLocation(programSkybox, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(programSkybox, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-
-
+	
+	
 
 	glUseProgram(0);
 	glfwSwapBuffers(window);
@@ -294,6 +332,7 @@ void init(GLFWwindow* window)
 	programTest = shaderLoader.CreateProgram("shaders/test.vert", "shaders/test.frag");
 	programSun = shaderLoader.CreateProgram("shaders/shader_8_sun.vert", "shaders/shader_8_sun.frag");
 	programTex = shaderLoader.CreateProgram("shaders/shader_tex.vert", "shaders/shader_tex.frag");
+	programSkybox = shaderLoader.CreateProgram("shaders/shaderskybox.vert", "shaders/shaderskybox.frag");
 
 	loadModelToContext("./models/sphere.obj", sphereContext);
 	loadModelToContext("./models/spaceship.obj", shipContext);
@@ -303,8 +342,8 @@ void init(GLFWwindow* window)
 	loadModelToContext("./models/materace.obj", models::materaceContext);
 	loadModelToContext("./models/table.obj", models::tableContext);
 	loadModelToContext("./models/door.obj", models::doorContext);
-	loadModelToContext("./models/plane.obj", models::planeContext);
-	loadModelToContext("./models/room.obj", models::roomContext);
+	loadModelToContext("./models/plane2.obj", models::planeContext);
+	loadModelToContext("./models/room2.obj", models::roomContext);
 	loadModelToContext("./models/spaceship.obj", models::spaceshipContext);
 	loadModelToContext("./models/window1.obj", models::window1Context);
 	loadModelToContext("./models/window2.obj", models::window2Context);
@@ -324,12 +363,90 @@ void init(GLFWwindow* window)
 	texture::kot = Core::LoadTexture("./textures/toksa2.png");
 	texture::wood_floor = Core::LoadTexture("./textures/wood_floor.jpg");
 	texture::table = Core::LoadTexture("./textures/table.jpg");
-	texture::wallpaper = Core::LoadTexture("./textures/wallpaper.jpg");
+	texture::wallpaper = Core::LoadTexture("./textures/wallpaper4.jpg");
 	texture::materace = Core::LoadTexture("./textures/materace.jpg");
 	texture::chairs = Core::LoadTexture("./textures/chairs.jpg");
 	texture::metal = Core::LoadTexture("./textures/metal.jpg");
 	texture::bed = Core::LoadTexture("./textures/bed.jpg");
+	texture::fan = Core::LoadTexture("./textures/fan.jpg");
+	texture::lamp = Core::LoadTexture("./textures/lamp.jpg");
 
+
+
+	glDepthFunc(GL_LEQUAL);
+
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glGenBuffers(1, &skyboxEBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(skyboxIndices), &skyboxIndices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+	std::string facesCubemap[6] =
+	{
+		"./cubemap/negx.jpg",
+		"./cubemap/negy.jpg",
+		"./cubemap/negz.jpg",
+		"./cubemap/posx.jpg",
+		"./cubemap/posy.jpg",
+		"./cubemap/posz.jpg",
+	};
+
+
+	unsigned int cubemapTexture;
+	glGenTextures(1, &cubemapTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load(facesCubemap[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D
+			(
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0,
+				GL_RGB,
+				width,
+				height,
+				0,
+				GL_RGB,
+				GL_UNSIGNED_BYTE,
+				data
+			);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Failed to load texture: " << facesCubemap[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+
+
+	glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	glDepthFunc(GL_LESS);
+	
 }
 
 
