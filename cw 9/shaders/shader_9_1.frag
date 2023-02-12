@@ -4,6 +4,7 @@ float AMBIENT = 0.03;
 float PI = 3.14;
 
 uniform sampler2D depthMap;
+uniform sampler2D depthMapShip;
 
 uniform vec3 cameraPos;
 
@@ -35,19 +36,21 @@ in vec3 viewDirTS;
 in vec3 lightDirTS;
 in vec3 spotlightDirTS;
 in vec3 sunDirTS;
-in vec4 sunSpacePos;
 
 in vec3 test;
 
-float calculateShadow(vec4 sunSpacePos, sampler2D depthMap){
-    vec4 sunSpacePosNorm = (sunSpacePos/sunSpacePos.w)*0.5+0.5;
-    float closestDepth = texture2D(depthMap, sunSpacePosNorm.xy).r;
-    if (closestDepth + 0.007> sunSpacePosNorm.z){
-        return 1.0;
-    }
-    else{
-        return 0.0;  
-    }
+in vec4 sunSpacePos;
+in vec4 shipPos;
+
+float calculateShadow(vec3 normal, vec3 light, vec4 pos, sampler2D depth) {
+    vec4 posNormalized = (pos / pos.w) * 0.5 + 0.5;
+    float closestDepth = texture2D(depth, posNormalized.xy).r;
+
+    //float bias = max(0.03 * (1.0 - dot(normal, light)), 0.003); 
+
+    if (closestDepth + 0.003 > posNormalized.z) return 1.0;
+
+    return 0.0;
 }
 
 float DistributionGGX(vec3 normal, vec3 H, float roughness){
@@ -134,11 +137,11 @@ void main()
 	
 
     float angle_atenuation = clamp((dot(-normalize(spotlightPos-worldPos),spotlightConeDir)-0.5)*3,0,1);
-	attenuatedlightColor = angle_atenuation*spotlightColor/pow(length(spotlightPos-worldPos),2);
+	attenuatedlightColor = angle_atenuation*spotlightColor/pow(length(spotlightPos-worldPos),2)*calculateShadow(normal, spotlightDir, shipPos, depthMapShip);
 	ilumination=ilumination+PBRLight(spotlightDir,attenuatedlightColor,normal,viewDir);
 
 	//sun
-	ilumination=ilumination+PBRLight(sunDir,sunColor*calculateShadow(sunSpacePos, depthMap),normal,viewDir);
+	ilumination=ilumination+PBRLight(sunDir,sunColor*calculateShadow(normal, spotlightDir, sunSpacePos, depthMap),normal,viewDir);
 
     
 	outColor = vec4(vec3(1.0) - exp(-ilumination*exposition),1);
