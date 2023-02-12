@@ -1,0 +1,32 @@
+# Blender 3.4.1 MTL File: 'room.blend'
+# www.blender.org
+
+newmtl 01___Default
+Kd 0.028435 0.026653 0.020962
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+Pm 0.000000
+Ps 0.127273
+Pc 0.000000
+Pcr 0.039091
+aniso 0.000000
+anisor 0.000000
+map_Pr Marble002_4K-JPG/Marble002_4K_Roughness.jpg
+
+newmtl Material.005
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+Pr 0.359091
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.030000
+aniso 0.000000
+anisor 0.000000

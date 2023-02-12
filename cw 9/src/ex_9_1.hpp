@@ -21,7 +21,7 @@ const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 int WIDTH = 500, HEIGHT = 500;
 
 namespace models {
-	Core::RenderContext bedContext;
+	/*Core::RenderContext bedContext;
 	Core::RenderContext materaceContext;
 	Core::RenderContext tableContext;
 	Core::RenderContext doorContext;
@@ -39,19 +39,39 @@ namespace models {
 	Core::RenderContext wall1Context;
 	Core::RenderContext wall2Context;
 	Core::RenderContext wall3Context;
-	Core::RenderContext wall4Context;
+	Core::RenderContext wall4Context;*/
+	Core::RenderContext floorContext;
+	Core::RenderContext bedContext;
+	Core::RenderContext pillowsContext;
+	Core::RenderContext chairContext;
+	Core::RenderContext wallsContext;
+	Core::RenderContext candleContext;
+	Core::RenderContext blanketContext;
+	Core::RenderContext cabinetContext;
+	Core::RenderContext curtainsContext;
+	Core::RenderContext deskContext;
+	Core::RenderContext doorContext;
+	Core::RenderContext padContext;
+	Core::RenderContext wall_bedContext;
+	Core::RenderContext door_panelContext;
 
 }
 
 namespace texture {
-	GLuint kot;
+	/*GLuint kot;
 	GLuint wood_floor;
 	GLuint table;
 	GLuint wallpaper;
 	GLuint materace;
 	GLuint chairs;
 	GLuint metal;
-	GLuint bed;
+	GLuint bed;*/
+	GLuint floor;
+	GLuint marble;
+	GLuint fabric;
+	GLuint blanket;
+	GLuint smth;
+
 
 }
 
@@ -216,28 +236,28 @@ void renderScene(GLFWwindow* window)
 	
 
 	glUseProgram(programTex);
-	drawObjectTexture(models::bedContext, glm::mat4(), texture::bed, 10);
-	drawObjectTexture(models::planeContext, glm::mat4(), texture::wood_floor, 30);
-	drawObjectTexture(models::materaceContext, glm::mat4(), texture::materace, 20);
-	drawObjectTexture(models::roomContext, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall1Context, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall2Context, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall3Context, glm::mat4(), texture::wallpaper, 1);
-	drawObjectTexture(models::wall4Context, glm::mat4(), texture::wallpaper, 1);
+	//drawObjectTexture(models::bedContext, glm::mat4(), texture::bed, 10);
+	drawObjectTexture(models::floorContext, glm::mat4(), texture::floor, 30);
+	drawObjectTexture(models::blanketContext, glm::mat4(), texture::blanket, 20);
+	drawObjectTexture(models::wall_bedContext, glm::mat4(), texture::marble, 1);
+	drawObjectTexture(models::pillowsContext, glm::mat4(), texture::fabric, 1);
+	drawObjectTexture(models::chairContext, glm::mat4(), texture::smth, 1);
+	drawObjectTexture(models::deskContext, glm::mat4(), texture::smth, 1);
+	drawObjectTexture(models::cabinetContext, glm::mat4(), texture::smth, 1);
 
 
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
 	trans = glm::rotate(trans, (float)glfwGetTime() * 2, glm::vec3(0.0f, 1.0f, 0.0f));
-	drawObjectTexture(models::ceilingfanContext, trans, texture::kot, 20);
-	drawObjectTexture(models::tableContext, glm::mat4(), texture::table, 20);
-	drawObjectTexture(models::doorContext, glm::mat4(), texture::metal, 10);
-	drawObjectTexture(models::window1Context, glm::mat4(), texture::table, 1);
-	drawObjectTexture(models::window2Context, glm::mat4(), texture::table, 1);
-	drawObjectTexture(models::window3Context, glm::mat4(), texture::table, 1);
-	drawObjectTexture(models::lampContext, glm::mat4(), texture::kot, 20);
-	drawObjectTexture(models::chair1Context, glm::mat4(), texture::chairs, 1);
-	drawObjectTexture(models::chair2Context, glm::mat4(), texture::chairs, 1);
+	//drawObjectTexture(models::ceilingfanContext, trans, texture::kot, 20);
+	//drawObjectTexture(models::tableContext, glm::mat4(), texture::table, 20);
+	//drawObjectTexture(models::doorContext, glm::mat4(), texture::metal, 10);
+	//drawObjectTexture(models::window1Context, glm::mat4(), texture::table, 1);
+	drawObjectTexture(models::blanketContext, glm::mat4(), texture::blanket, 1);
+	drawObjectTexture(models::pillowsContext, glm::mat4(), texture::fabric, 1);
+	drawObjectTexture(models::cabinetContext, glm::mat4(), texture::smth, 1);
+	drawObjectTexture(models::chairContext, glm::mat4(), texture::smth, 1);
+	drawObjectTexture(models::deskContext, glm::mat4(), texture::smth, 1);
 
 	glm::vec3 spaceshipSide = glm::normalize(glm::cross(spaceshipDir, glm::vec3(0.f, 1.f, 0.f)));
 	glm::vec3 spaceshipUp = glm::normalize(glm::cross(spaceshipSide, spaceshipDir));
@@ -299,7 +319,7 @@ void init(GLFWwindow* window)
 	loadModelToContext("./models/spaceship.obj", shipContext);
 
 
-	loadModelToContext("./models/bed.obj", models::bedContext);
+	/*loadModelToContext("./models/bed.obj", models::bedContext);
 	loadModelToContext("./models/materace.obj", models::materaceContext);
 	loadModelToContext("./models/table.obj", models::tableContext);
 	loadModelToContext("./models/door.obj", models::doorContext);
@@ -317,18 +337,36 @@ void init(GLFWwindow* window)
 	loadModelToContext("./models/wall1.obj", models::wall1Context);
 	loadModelToContext("./models/wall2.obj", models::wall2Context);
 	loadModelToContext("./models/wall3.obj", models::wall3Context);
-	loadModelToContext("./models/wall4.obj", models::wall4Context);
+	loadModelToContext("./models/wall4.obj", models::wall4Context);*/
+	loadModelToContext("./models/bed.obj", models::bedContext);
+	loadModelToContext("./models/blanket.obj", models::blanketContext);
+	loadModelToContext("./models/cabinet.obj", models::cabinetContext);
+	loadModelToContext("./models/candle.obj", models::candleContext);
+	loadModelToContext("./models/chair.obj", models::chairContext);
+	loadModelToContext("./models/curtains.obj", models::curtainsContext);
+	loadModelToContext("./models/desk.obj", models::deskContext);
+	loadModelToContext("./models/door.obj", models::doorContext);
+	loadModelToContext("./models/door_panel.obj", models::door_panelContext);
+	loadModelToContext("./models/floor.obj", models::floorContext);
+	loadModelToContext("./models/pad.obj", models::padContext);
+	loadModelToContext("./models/pillows.obj", models::pillowsContext);
+	loadModelToContext("./models/wall_bed.obj", models::wall_bedContext);
+	loadModelToContext("./models/walls.obj", models::wallsContext);
 
-
-
-	texture::kot = Core::LoadTexture("./textures/toksa2.png");
+	/*texture::kot = Core::LoadTexture("./textures/toksa2.png");
 	texture::wood_floor = Core::LoadTexture("./textures/wood_floor.jpg");
 	texture::table = Core::LoadTexture("./textures/table.jpg");
 	texture::wallpaper = Core::LoadTexture("./textures/wallpaper.jpg");
 	texture::materace = Core::LoadTexture("./textures/materace.jpg");
 	texture::chairs = Core::LoadTexture("./textures/chairs.jpg");
 	texture::metal = Core::LoadTexture("./textures/metal.jpg");
-	texture::bed = Core::LoadTexture("./textures/bed.jpg");
+	texture::bed = Core::LoadTexture("./textures/bed.jpg");*/
+
+	texture::floor = Core::LoadTexture("./textures/floor.jpg");
+	texture::marble = Core::LoadTexture("./textures/marble.jpg");
+	texture::fabric = Core::LoadTexture("./textures/fabric.jpg");
+	texture::blanket = Core::LoadTexture("./textures/blanket.jpg");
+	texture::smth = Core::LoadTexture("./textures/smth.jpg");
 
 }
 

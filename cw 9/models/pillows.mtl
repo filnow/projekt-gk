@@ -1,0 +1,17 @@
+# Blender 3.4.1 MTL File: 'room.blend'
+# www.blender.org
+
+newmtl Material.007
+Kd 0.021500 0.020466 0.071446
+Ks 0.181818 0.181818 0.181818
+Ke 0.000000 0.000000 0.000000
+Ni 0.000000
+d 1.000000
+illum 2
+Pm 0.000000
+Ps 0.000000
+Pc 0.000000
+Pcr 0.000000
+aniso 0.000000
+anisor 0.000000
+map_Pr C:/Users/versi/OneDrive/Downloads/Fabric020_4K-JPG/Fabric020_4K_Roughness.jpg
