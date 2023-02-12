@@ -258,6 +258,7 @@ void renderScene(GLFWwindow* window)
 	drawObjectTexture(models::cabinetContext, glm::mat4(), texture::smth, 1);
 	drawObjectTexture(models::chairContext, glm::mat4(), texture::smth, 1);
 	drawObjectTexture(models::deskContext, glm::mat4(), texture::smth, 1);
+	drawObjectTexture(models::floorContext, glm::mat4(), texture::floor, 20);
 
 	glm::vec3 spaceshipSide = glm::normalize(glm::cross(spaceshipDir, glm::vec3(0.f, 1.f, 0.f)));
 	glm::vec3 spaceshipUp = glm::normalize(glm::cross(spaceshipSide, spaceshipDir));

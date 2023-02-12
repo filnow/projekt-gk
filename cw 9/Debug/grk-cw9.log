@@ -6,9 +6,9 @@ C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(127,38): warning C4305: '=
 C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(150,16): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(215,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(232,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(275,2): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(410,21): warning C4305: '-=': truncation from 'double' to 'float'
-C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(412,21): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(276,2): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(411,21): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\versi\Desktop\projekt-gk\cw 9\src\ex_9_1.hpp(413,21): warning C4305: '+=': truncation from 'double' to 'float'
 Box.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   grk-cw9.vcxproj -> C:\Users\versi\Desktop\projekt-gk\Debug\grk-cw9.exe
