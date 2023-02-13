@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\programs\projekt-gk\Debug\grk-cw9.exe</FullPath>
+      <FullPath>C:\programs\projekt-gk\Release\grk-cw9.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

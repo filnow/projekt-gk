@@ -1,0 +1,53 @@
+﻿  Box.cpp
+  Camera.cpp
+  main.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": ponowna definicja makra
+C:\programs\projekt-gk\dependencies\glfw-3.3.8.bin.WIN32\include\GLFW\glfw3.h(123,1): message : zobacz poprzednią definicję „APIENTRY”
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(114,30): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(127,16): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(148,16): warning C4305: "inicjowanie": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(183,15): warning C4101: "textureID": lokalna zmienna, do której nie istnieje odwołanie
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(222,38): warning C4305: "=": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(286,13): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(379,13): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(426,2): warning C4305: "argument": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(553,25): warning C4305: "-=": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(555,25): warning C4305: "+=": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(557,21): warning C4305: "-=": obcięcie z "double" do "float"
+C:\programs\projekt-gk\cw 9\src\ex_9_1.hpp(559,21): warning C4305: "+=": obcięcie z "double" do "float"
+  Render_Utils.cpp
+  Shader_Loader.cpp
+  Texture.cpp
+  image_DXT.c
+C:\programs\projekt-gk\cw 9\src\SOIL\image_DXT.c(92,9): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  image_helper.c
+C:\programs\projekt-gk\cw 9\src\SOIL\image_helper.c(325,17): warning C4244: "inicjowanie": konwersja z "double" do "float", możliwa utrata danych
+C:\programs\projekt-gk\cw 9\src\SOIL\image_helper.c(366,13): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
+C:\programs\projekt-gk\cw 9\src\SOIL\image_helper.c(373,20): warning C4244: "=": konwersja z "float" do "int", możliwa utrata danych
+C:\programs\projekt-gk\cw 9\src\SOIL\image_helper.c(415,13): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
+C:\programs\projekt-gk\cw 9\src\SOIL\image_helper.c(422,20): warning C4244: "=": konwersja z "float" do "int", możliwa utrata danych
+  SOIL.c
+C:\programs\projekt-gk\cw 9\src\SOIL\SOIL.c(1719,36): warning C4018: "<=": niezgodność typu ze znakiem/bez znaku
+C:\programs\projekt-gk\cw 9\src\SOIL\SOIL.c(1729,19): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\programs\projekt-gk\cw 9\src\SOIL\SOIL.c(1841,6): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  stb_image_aug.c
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(177,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(251,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(303,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(1557,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(2394,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(2709,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(2995,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(3209,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(3548,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stb_image_aug.c(3644,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\programs\projekt-gk\cw 9\src\SOIL\stbi_DDS_aug_c.h(362,19): warning C4018: ">": niezgodność typu ze znakiem/bez znaku
+C:\programs\projekt-gk\cw 9\src\SOIL\stbi_DDS_aug_c.h(366,19): warning C4018: ">": niezgodność typu ze znakiem/bez znaku
+C:\programs\projekt-gk\cw 9\src\SOIL\stbi_DDS_aug_c.h(390,19): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\programs\projekt-gk\cw 9\src\SOIL\stbi_DDS_aug_c.h(427,19): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+C:\programs\projekt-gk\cw 9\src\SOIL\stbi_DDS_aug_c.h(498,14): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  Trwa generowanie kodu
+  Previous IPDB not found, fall back to full compilation.
+  All 593 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Zakończono generowanie kodu
+  grk-cw9.vcxproj -> C:\programs\projekt-gk\Release\grk-cw9.exe
