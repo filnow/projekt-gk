@@ -8,6 +8,7 @@ layout(location = 4) in vec3 vertexBitangent;
 
 uniform mat4 lightVP;
 uniform mat4 lightShipVP;
+uniform mat4 lightLampVP;
 uniform mat4 transformation;
 uniform mat4 modelMatrix;
 
@@ -26,11 +27,14 @@ out vec3 sunDirTS;
 
 out vec4 sunSpacePos;
 out vec4 shipPos;
+out vec4 lampPos;
+out vec2 vecTex;
 
 void main()
 {
 	sunSpacePos = lightVP * modelMatrix * vec4(vertexPosition, 1);
 	shipPos = lightShipVP * modelMatrix * vec4(vertexPosition, 1);
+	lampPos = lightLampVP * modelMatrix * vec4(vertexPosition, 1);
 
 	worldPos = (modelMatrix* vec4(vertexPosition,1)).xyz;
 	vecNormal = (modelMatrix* vec4(vertexNormal,0)).xyz;
@@ -39,6 +43,8 @@ void main()
 	vec3 w_tangent = normalize(mat3(modelMatrix)*vertexTangent);
 	vec3 w_bitangent = normalize(mat3(modelMatrix)*vertexBitangent);
 	mat3 TBN = transpose(mat3(w_tangent, w_bitangent, vecNormal));
+
+	vecTex = vertexTexCoord;
 	
 	vec3 V = normalize(cameraPos-worldPos);
 	viewDirTS = TBN*V;

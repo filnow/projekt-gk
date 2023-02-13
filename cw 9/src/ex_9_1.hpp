@@ -7,7 +7,7 @@
 
 #include "Shader_Loader.h"
 #include "Render_Utils.h"
-//#include "Texture.h"
+#include "Texture.h"
 
 #include "Box.cpp"
 #include <assimp/Importer.hpp>
@@ -41,7 +41,7 @@ namespace models {
 	Core::RenderContext cubeContext;
 }
 GLuint cubemapTexture;
-
+GLuint bloomTextureFBO;
 std::vector<std::string> faces
 {
 	"cubemap/posx.jpg",
@@ -57,12 +57,16 @@ GLuint depthMap;
 GLuint depthMapShipFBO;
 GLuint depthMapShip;
 
+GLuint depthMapLampFBO;
+GLuint depthMapLamp;
+
 GLuint program;
 GLuint programSun;
 GLuint programTest;
 GLuint programTex;
 GLuint programDepth;
 GLuint programSkybox;
+GLuint programBlur;
 
 Core::Shader_Loader shaderLoader;
 
@@ -79,15 +83,22 @@ glm::vec3 cameraDir = glm::vec3(-0.354510f, 0.000000f, 0.935054f);
 
 glm::vec3 spaceshipPos = glm::vec3(0.065808f, 1.250000f, -2.189549f);
 glm::vec3 spaceshipDir = glm::vec3(-0.490263f, 0.000000f, 0.871578f);
+
+unsigned int colorBuffers[2];
+unsigned int pingpongFBO[2];
+unsigned int pingpongBuffer[2];
+
+
 GLuint VAO, VBO;
 
 float aspectRatio = 1.f;
 
 float exposition = 1.f;
 float expositionShip = 1.f;
+float expositionLamp = 1.f;
 
-//glm::vec3 pointlightPos = glm::vec3(0, 2, 0);
-//glm::vec3 pointlightColor = glm::vec3(0.9, 0.6, 0.6);
+glm::vec3 pointlightPos = glm::vec3(0, 2, 0);
+glm::vec3 pointlightColor = glm::vec3(0.9, 0.6, 0.6);
 
 glm::vec3 spotlightPos = glm::vec3(0, 0, 0);
 glm::vec3 spotlightConeDir = glm::vec3(0, 0, 0);
@@ -100,6 +111,7 @@ float deltaTime = 0.f;
 glm::mat4 lightVP = glm::ortho(-3.f, 3.f, -3.f, 3.f, 1.0f, 20.0f) * glm::lookAt(sunPos, sunPos - sunDir, glm::vec3(0, 1, 0));
 
 glm::mat4 lightShipVP;
+glm::mat4 lightLampVP;
 
 glm::mat4 createPerspectiveMatrix()
 {
@@ -216,6 +228,11 @@ void drawObjectPBR(Core::RenderContext& context, glm::mat4 modelMatrix, glm::vec
 	glBindTexture(GL_TEXTURE_2D, depthMapShip);
 	glUniformMatrix4fv(glGetUniformLocation(program, "lightShipVP"), 1, GL_FALSE, (float*)&lightShipVP);
 
+	glActiveTexture(GL_TEXTURE2);
+	glUniform1i(glGetUniformLocation(program, "depthMapLamp"), 2);
+	glBindTexture(GL_TEXTURE_2D, depthMapLamp);
+	glUniformMatrix4fv(glGetUniformLocation(program, "lightLampVP"), 1, GL_FALSE, (float*)&lightLampVP);
+
 	glm::mat4 viewProjectionMatrix = createPerspectiveMatrix() * createCameraMatrix();
 	glm::mat4 transformation = viewProjectionMatrix * modelMatrix;
 	glUniformMatrix4fv(glGetUniformLocation(program, "transformation"), 1, GL_FALSE, (float*)&transformation);
@@ -223,6 +240,7 @@ void drawObjectPBR(Core::RenderContext& context, glm::mat4 modelMatrix, glm::vec
 
 	glUniform1f(glGetUniformLocation(program, "exposition"), exposition);
 	glUniform1f(glGetUniformLocation(program, "expositionShip"), expositionShip);
+	glUniform1f(glGetUniformLocation(program, "expositionLamp"), expositionLamp);
 
 	glUniform1f(glGetUniformLocation(program, "roughness"), roughness);
 	glUniform1f(glGetUniformLocation(program, "metallic"), metallic);
@@ -234,13 +252,16 @@ void drawObjectPBR(Core::RenderContext& context, glm::mat4 modelMatrix, glm::vec
 	glUniform3f(glGetUniformLocation(program, "sunDir"), sunDir.x, sunDir.y, sunDir.z);
 	glUniform3f(glGetUniformLocation(program, "sunColor"), sunColor.x, sunColor.y, sunColor.z);
 
-	//glUniform3f(glGetUniformLocation(program, "lightPos"), pointlightPos.x, pointlightPos.y, pointlightPos.z);
-	//glUniform3f(glGetUniformLocation(program, "lightColor"), pointlightColor.x, pointlightColor.y, pointlightColor.z);
+	glUniform3f(glGetUniformLocation(program, "lightPos"), pointlightPos.x, pointlightPos.y, pointlightPos.z);
+	glUniform3f(glGetUniformLocation(program, "lightColor"), pointlightColor.x, pointlightColor.y, pointlightColor.z);
 
 	glUniform3f(glGetUniformLocation(program, "spotlightConeDir"), spotlightConeDir.x, spotlightConeDir.y, spotlightConeDir.z);
 	glUniform3f(glGetUniformLocation(program, "spotlightPos"), spotlightPos.x, spotlightPos.y, spotlightPos.z);
 	glUniform3f(glGetUniformLocation(program, "spotlightColor"), spotlightColor.x, spotlightColor.y, spotlightColor.z);
 	glUniform1f(glGetUniformLocation(program, "spotlightPhi"), spotlightPhi);
+
+	glUniform3f(glGetUniformLocation(program, "pointLightPos"), pointlightPos.x, pointlightPos.y, pointlightPos.z);
+	glUniform3f(glGetUniformLocation(program, "pointLightColor"), pointlightColor.x, pointlightColor.y, pointlightColor.z);
 	Core::DrawContext(context);
 }
 
@@ -341,26 +362,150 @@ void initDepthMapShip()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void initDepthMapLamp()
+{
+	glGenFramebuffers(1, &depthMapLampFBO);
+	glGenTextures(1, &depthMapLamp);
+	glBindTexture(GL_TEXTURE_2D, depthMapLamp);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapLampFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapLamp, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void initBloom()
+{
+	// set up floating point framebuffer to render scene to
+	glGenFramebuffers(1, &bloomTextureFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomTextureFBO);
+
+	glGenTextures(2, colorBuffers);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA16F, WIDTH, HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		// attach texture to framebuffer
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0
+		);
+		unsigned int rboDepth;
+
+		glGenRenderbuffers(1, &rboDepth);
+		glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, WIDTH, HEIGHT);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+		unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		glDrawBuffers(2, attachments);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "Framebuffer not complete!" << std::endl;
+	}
+}
+
+void initPingPong()
+{
+
+	glGenFramebuffers(2, pingpongFBO);
+	glGenTextures(2, pingpongBuffer);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
+		glBindTexture(GL_TEXTURE_2D, pingpongBuffer[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA16F, WIDTH, HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0
+		);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
+void pingPongBluring()
+{
+
+	bool horizontal = true, first_iteration = true;
+	int amount = 50;
+	glUseProgram(programBlur);
+
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+		glUniform1i(glGetUniformLocation(programBlur, "horizontal"), horizontal);
+		glBindTexture(
+			GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]
+		);
+		Core::SetActiveTexture(first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal], "image", programBlur, 0);
+		Core::DrawContext(models::testContext);
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/**for (unsigned int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+		glUniform1i(glGetUniformLocation(programBlur, "horizontal"), horizontal);
+
+		if (first_iteration)
+		{
+			glBindTexture(GL_TEXTURE_2D, bloomTextureFBO);
+			first_iteration = false;
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
+		}
+		//Tu powinnismy rysować obiekt? wywołac funkcje drawObjectPBR?
+		Core::DrawContext(models::couchContext);
+		horizontal = !horizontal;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);**/
+}
+
 void renderScene(GLFWwindow* window)
 {
 	lightShipVP = createPerspectiveMatrix(0.5) * glm::lookAt(spotlightPos, spotlightPos + spotlightConeDir, glm::vec3(0, 1, 0));
-	glClearColor(0.4f, 0.4f, 0.8f, 1.0f);
+	glClearColor(1.f, 1, 1, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	float time = glfwGetTime();
 	updateDeltaTime(time);
 	renderShadowapSun(depthMapFBO, lightVP);
 	renderShadowapSun(depthMapShipFBO, lightShipVP);
+	renderShadowapSun(depthMapLampFBO, lightLampVP);
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomTextureFBO);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, WIDTH, HEIGHT);
 
 	drawSkyBox(models::cubeContext, glm::translate(cameraPos));
 	glUniform1f(glGetUniformLocation(programSkybox, "exposition"), exposition);
 	//space lamp
-	//glUseProgram(programSun);
-	//glm::mat4 viewProjectionMatrix = createPerspectiveMatrix() * createCameraMatrix();
-	//glm::mat4 transformation = viewProjectionMatrix * glm::translate(pointlightPos) * glm::scale(glm::vec3(0.1));
-	//glUniformMatrix4fv(glGetUniformLocation(programSun, "transformation"), 1, GL_FALSE, (float*)&transformation);
-	//glUniform3f(glGetUniformLocation(programSun, "color"), sunColor.x / 2, sunColor.y / 2, sunColor.z / 2);
-	//glUniform1f(glGetUniformLocation(programSun, "exposition"), exposition);
-	//Core::DrawContext(sphereContext);
+	glUseProgram(programSun);
+	glm::mat4 viewProjectionMatrix = createPerspectiveMatrix() * createCameraMatrix();
+	glm::mat4 transformation = viewProjectionMatrix * glm::translate(pointlightPos) * glm::scale(glm::vec3(0.1));
+	glUniformMatrix4fv(glGetUniformLocation(programSun, "transformation"), 1, GL_FALSE, (float*)&transformation);
+	glUniform3f(glGetUniformLocation(programSun, "color"), sunColor.x / 2, sunColor.y / 2, sunColor.z / 2);
+	glUniform1f(glGetUniformLocation(programSun, "expositionLamp"), expositionLamp);
+	Core::DrawContext(sphereContext);
 
 	glUseProgram(program);
 
@@ -400,13 +545,16 @@ void renderScene(GLFWwindow* window)
 	spotlightConeDir = spaceshipDir*expositionShip;
 
 
+	pingPongBluring();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//test depth buffer
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glUseProgram(programTest);
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, depthMapShip);
-	//Core::DrawContext(models::testContext);
+	glUseProgram(programTest);
+	Core::SetActiveTexture(colorBuffers[0], "color", programTest, 0);
+	Core::SetActiveTexture(pingpongBuffer[1], "highlight", programTest, 1);
+	//Core::SetActiveTexture(colorBuffers[0],prog)
+	Core::DrawContext(models::testContext);
 
 	glUseProgram(0);
 	glfwSwapBuffers(window);
@@ -441,6 +589,7 @@ void init(GLFWwindow* window)
 	programSun = shaderLoader.CreateProgram("shaders/shader_8_sun.vert", "shaders/shader_8_sun.frag");
 	programSkybox = shaderLoader.CreateProgram("shaders/shaderskybox.vert", "shaders/shaderskybox.frag");
 	programDepth = shaderLoader.CreateProgram("shaders/shader_depth.vert", "shaders/shader_depth.frag");
+	programBlur = shaderLoader.CreateProgram("shaders/shader_blur.vert", "shaders/shader_blur.frag");
 	loadModelToContext("./models/sphere.obj", sphereContext);
 	loadModelToContext("./models/spaceship.obj", shipContext);
 
@@ -464,6 +613,9 @@ void init(GLFWwindow* window)
 	loadCubemap(faces);
 	initDepthMap();
 	initDepthMapShip();
+	initDepthMapLamp();
+	initBloom();
+	initPingPong();
 }
 
 void shutdown(GLFWwindow* window)

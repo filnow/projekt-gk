@@ -1,10 +1,16 @@
 #version 430 core
 
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BloomColor;
+
 float AMBIENT = 0.03;
 float PI = 3.14;
 
 uniform sampler2D depthMap;
 uniform sampler2D depthMapShip;
+
+uniform sampler2D colorTexture;
+uniform sampler2D normalSampler;
 
 uniform vec3 cameraPos;
 
@@ -41,6 +47,8 @@ in vec3 test;
 
 in vec4 sunSpacePos;
 in vec4 shipPos;
+
+in vec2 vecTex;
 
 float calculateShadow(vec3 normal, vec3 light, vec4 pos, sampler2D depth) {
     vec4 posNormalized = (pos / pos.w) * 0.5 + 0.5;
@@ -119,6 +127,9 @@ void main()
 	//vec3 normal = vec3(0,0,1);
     vec3 normal = normalize(vecNormal);
 
+    //color = texture2D(colorTexture, vecTex).xyz;
+    //vec3 normal = normalize((texture2D(normalSampler, vecTex).xyz) * 2 - 1);
+
     //vec3 viewDir = normalize(viewDirTS);
     vec3 viewDir = normalize(cameraPos-worldPos);
 
@@ -140,11 +151,21 @@ void main()
 	attenuatedlightColor = angle_atenuation*spotlightColor/pow(length(spotlightPos-worldPos),2)*calculateShadow(normal, spotlightDir, shipPos, depthMapShip);
 	ilumination=ilumination+PBRLight(spotlightDir,attenuatedlightColor,normal,viewDir);
 
+
 	//sun
 	ilumination=ilumination+PBRLight(sunDir,sunColor*calculateShadow(normal, spotlightDir, sunSpacePos, depthMap),normal,viewDir);
+   
 
     
-	outColor = vec4(vec3(1.0) - exp(-ilumination*exposition),1);
+	outColor = vec4(vec3(1.01) - exp(-ilumination*exposition),1);
+
+     FragColor = outColor;
+    // check whether fragment output is higher than threshold, if so output as brightness color
+    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        BloomColor = vec4(FragColor.rgb, 1.0);
+    else
+        BloomColor = vec4(0.0, 0.0, 0.0, 1.0); 
 	//outColor = vec4(roughness,metallic,0,1);
     //outColor = vec4(test;
 }

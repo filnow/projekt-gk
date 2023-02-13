@@ -10,5 +10,5 @@ out vec2 tc;
 void main()
 {
 	tc = vertexTexCoord;
-	gl_Position = vec4(vertexPosition*0.9, 1.0);
+	gl_Position = vec4(vertexPosition, 1.0);
 }
