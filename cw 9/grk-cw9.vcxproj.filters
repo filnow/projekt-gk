@@ -51,6 +51,15 @@
     <ClCompile Include="src\SOIL\image_helper.c">
       <Filter>Source Files\SOIL</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
+=======
+    <ClCompile Include="src\SOIL\stb_image_aug.c">
+      <Filter>Source Files\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="particles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\objload.h">
@@ -83,10 +92,14 @@
     <ClInclude Include="src\SOIL\stbi_DDS_aug_c.h">
       <Filter>Source Files\SOIL</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
     <ClInclude Include="src\SOIL\image_DXT.h">
       <Filter>Source Files\SOIL</Filter>
     </ClInclude>
     <ClInclude Include="src\ex_9_1.hpp">
+=======
+    <ClInclude Include="SimpleParticles.hpp">
+>>>>>>> Stashed changes
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -115,5 +128,26 @@
     <None Include="shaders\shader_tex.vert">
       <Filter>Shader Files</Filter>
     </None>
+<<<<<<< Updated upstream
+=======
+    <None Include="shaders\shader_depth.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_depth.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shaderskybox.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shaderskybox.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_particles.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shaders\shader_particles.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>

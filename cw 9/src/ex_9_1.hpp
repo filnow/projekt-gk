@@ -4,7 +4,10 @@
 #include "ext.hpp"
 #include <iostream>
 #include <cmath>
+<<<<<<< Updated upstream
 #include "SOIL/SOIL.h"
+=======
+>>>>>>> Stashed changes
 
 #include "Shader_Loader.h"
 #include "Render_Utils.h"
@@ -15,6 +18,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <string>
+<<<<<<< Updated upstream
+=======
+#include <vector>
+#include "SOIL/stb_image_aug.h"
+#include "SOIL/SOIL.h"
+>>>>>>> Stashed changes
 
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
@@ -39,6 +48,7 @@ namespace models {
 	Core::RenderContext wall1Context;
 	Core::RenderContext wall2Context;
 	Core::RenderContext wall3Context;
+<<<<<<< Updated upstream
 	Core::RenderContext wall4Context;*/
 	Core::RenderContext floorContext;
 	Core::RenderContext bedContext;
@@ -55,6 +65,10 @@ namespace models {
 	Core::RenderContext wall_bedContext;
 	Core::RenderContext door_panelContext;
 
+=======
+	Core::RenderContext wall4Context;
+	Core::RenderContext cubeContext;
+>>>>>>> Stashed changes
 }
 
 namespace texture {
@@ -75,13 +89,34 @@ namespace texture {
 
 }
 
+
+GLuint cubemapTexture;
+
+std::vector<std::string> faces
+{
+	"cubemap/posx.jpg",
+		"cubemap/negx.jpg",
+		"cubemap/posy.jpg",
+		"cubemap/negy.jpg",
+		"cubemap/posz.jpg",
+		"cubemap/negz.jpg",
+};
+
 GLuint depthMapFBO;
 GLuint depthMap;
+
+GLuint depthMapShipFBO;
+GLuint depthMapShip;
 
 GLuint program;
 GLuint programSun;
 GLuint programTest;
 GLuint programTex;
+<<<<<<< Updated upstream
+=======
+GLuint programDepth;
+GLuint programSkybox;
+>>>>>>> Stashed changes
 
 Core::Shader_Loader shaderLoader;
 
@@ -113,9 +148,21 @@ glm::vec3 spotlightColor = glm::vec3(0.4, 0.4, 0.9) * 3;
 float spotlightPhi = 3.14 / 4;
 
 
+<<<<<<< Updated upstream
+=======
+
+
+
+>>>>>>> Stashed changes
 
 float lastTime = -1.f;
 float deltaTime = 0.f;
+
+
+
+glm::mat4 lightVP = glm::ortho(-3.f, 3.f, -3.f, 3.f, 1.0f, 20.0f) * glm::lookAt(sunPos, sunPos - sunDir, glm::vec3(0, 1, 0));
+
+glm::mat4 lightShipVP;
 
 void updateDeltaTime(float time) {
 	if (lastTime < 0) {
@@ -164,6 +211,41 @@ glm::mat4 createPerspectiveMatrix()
 	return perspectiveMatrix;
 }
 
+
+void loadCubemap(std::vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &cubemapTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+
+	int w, h;
+	unsigned char* data;
+	for (unsigned int i = 0; i < 6; i++)
+	{
+		data = SOIL_load_image(faces[i].c_str(), &w, &h, 0, SOIL_LOAD_RGBA);
+		glTexImage2D(
+			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+			0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data
+		);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
+void drawSkyBox(Core::RenderContext& context, glm::mat4 modelMatrix) {
+	glDisable(GL_DEPTH_TEST);
+	glUseProgram(programSkybox);
+	glm::mat4 viewProjectionMatrix = createPerspectiveMatrix() * createCameraMatrix();
+	glm::mat4 transformation = viewProjectionMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(programSkybox, "transformation"), 1, GL_FALSE, (float*)&transformation);
+	glUniform1i(glGetUniformLocation(programSkybox, "skybox"), 0);
+	Core::DrawContext(context);
+	glEnable(GL_DEPTH_TEST);
+}
+
 void drawObjectPBR(Core::RenderContext& context, glm::mat4 modelMatrix, glm::vec3 color, float roughness, float metallic) {
 
 
@@ -210,16 +292,102 @@ void drawObjectTexture(Core::RenderContext& context, glm::mat4 modelMatrix, GLui
 
 }
 
+void drawObjectDepth(Core::RenderContext& context, glm::mat4 viewProjection, glm::mat4 model) {
+	glUniformMatrix4fv(glGetUniformLocation(programDepth, "viewProjectionMatrix"), 1, GL_FALSE, (float*)&viewProjection);
+	glUniformMatrix4fv(glGetUniformLocation(programDepth, "modelMatrix"), 1, GL_FALSE, (float*)&model);
+	Core::DrawContext(context);
+}
 
-void renderShadowapSun() {
+void initDepthMap()
+{
+	glGenFramebuffers(1, &depthMapFBO);
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void initDepthMapShip()
+{
+	glGenFramebuffers(1, &depthMapShipFBO);
+	glGenTextures(1, &depthMapShip);
+	glBindTexture(GL_TEXTURE_2D, depthMapShip);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapShipFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapShip, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+
+void renderShadowapSun(GLuint depthFBO, glm::mat4 light) {
 	float time = glfwGetTime();
+	//uzupelnij o renderowanie glebokosci do tekstury
+	//ustawianie przestrzeni rysowania 
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	//bindowanie FBO
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
+	//czyszczenie mapy głębokości 
+	glClear(GL_DEPTH_BUFFER_BIT);
+	//ustawianie programu
+	glUseProgram(programDepth);
+
+	drawObjectDepth(sphereContext, light, glm::translate(pointlightPos) * glm::scale(glm::vec3(0.1)) * glm::eulerAngleY(time / 3) * glm::translate(glm::vec3(4.f, 0, 0)) * glm::scale(glm::vec3(0.3f)));
+
+	drawObjectDepth(sphereContext,
+		light,
+		glm::translate(pointlightPos) * glm::scale(glm::vec3(0.1)) * glm::eulerAngleY(time / 3) * glm::translate(glm::vec3(4.f, 0, 0)) * glm::eulerAngleY(time) * glm::translate(glm::vec3(1.f, 0, 0)) * glm::scale(glm::vec3(0.1f)));
+
+	drawObjectDepth(models::ceilingfanContext, light, glm::mat4());
+	drawObjectDepth(models::tableContext, light, glm::mat4());
+	drawObjectDepth(models::bedContext, light, glm::mat4());
+	drawObjectDepth(models::planeContext, light, glm::mat4());
+	drawObjectDepth(models::materaceContext, light, glm::mat4());
+	drawObjectDepth(models::roomContext, light, glm::mat4());
+	drawObjectDepth(models::materaceContext, light, glm::mat4());
+	drawObjectDepth(models::doorContext, light, glm::mat4());
+	drawObjectDepth(models::window1Context, light, glm::mat4());
+	drawObjectDepth(models::window2Context, light, glm::mat4());
+	drawObjectDepth(models::window3Context, light, glm::mat4());
+	drawObjectDepth(models::lampContext, light, glm::mat4());
+	drawObjectDepth(models::chair1Context, light, glm::mat4());
+	drawObjectDepth(models::chair2Context, light, glm::mat4());
+
+	glm::vec3 spaceshipSide = glm::normalize(glm::cross(spaceshipDir, glm::vec3(0.f, 1.f, 0.f)));
+	glm::vec3 spaceshipUp = glm::normalize(glm::cross(spaceshipSide, spaceshipDir));
+	glm::mat4 specshipCameraRotrationMatrix = glm::mat4({
+		spaceshipSide.x,spaceshipSide.y,spaceshipSide.z,0,
+		spaceshipUp.x,spaceshipUp.y,spaceshipUp.z ,0,
+		-spaceshipDir.x,-spaceshipDir.y,-spaceshipDir.z,0,
+		0.,0.,0.,1.,
+		});
 
 
-
-
-
-
+	//drawObjectColor(shipContext,
+	//	glm::translate(cameraPos + 1.5 * cameraDir + cameraUp * -0.5f) * inveseCameraRotrationMatrix * glm::eulerAngleY(glm::pi<float>()),
+	//	glm::vec3(0.3, 0.3, 0.5)
+	//	);
+	drawObjectDepth(shipContext,
+		light,
+		glm::translate(spaceshipPos) * specshipCameraRotrationMatrix * glm::eulerAngleY(glm::pi<float>()) * glm::scale(glm::vec3(0.03f))
+	);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, WIDTH, HEIGHT);
@@ -227,15 +395,21 @@ void renderShadowapSun() {
 
 void renderScene(GLFWwindow* window)
 {
+	lightShipVP = createPerspectiveMatrix() * glm::lookAt(spotlightPos, spotlightPos + spotlightConeDir, glm::vec3(0, 1, 0));
 	glClearColor(0.4f, 0.4f, 0.8f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	float time = glfwGetTime();
 	updateDeltaTime(time);
-	renderShadowapSun();
+	renderShadowapSun(depthMapFBO, lightVP);
+	renderShadowapSun(depthMapShipFBO, lightShipVP);
+
+	drawSkyBox(models::cubeContext, glm::translate(cameraPos));
+	glUniform1f(glGetUniformLocation(programSkybox, "exposition"), exposition);
 
 	
 
 	glUseProgram(programTex);
+<<<<<<< Updated upstream
 	//drawObjectTexture(models::bedContext, glm::mat4(), texture::bed, 10);
 	drawObjectTexture(models::floorContext, glm::mat4(), texture::floor, 30);
 	drawObjectTexture(models::blanketContext, glm::mat4(), texture::blanket, 20);
@@ -244,6 +418,15 @@ void renderScene(GLFWwindow* window)
 	drawObjectTexture(models::chairContext, glm::mat4(), texture::smth, 1);
 	drawObjectTexture(models::deskContext, glm::mat4(), texture::smth, 1);
 	drawObjectTexture(models::cabinetContext, glm::mat4(), texture::smth, 1);
+=======
+	//drawObjectPBR(models::bedContext, glm::mat4(), glm::vec3(0.1f, 0.3f, 0.5f), 0.1f, 0.3f);
+
+	drawObjectTexture(models::bedContext, glm::mat4(), texture::bed, 10);
+	drawObjectTexture(models::planeContext, glm::mat4(), texture::wood_floor, 10);
+	drawObjectTexture(models::materaceContext, glm::mat4(), texture::materace, 20);
+	drawObjectTexture(models::roomContext, glm::mat4(), texture::wallpaper, 5);
+
+>>>>>>> Stashed changes
 
 
 	glm::mat4 trans = glm::mat4(1.0f);
@@ -309,12 +492,16 @@ void init(GLFWwindow* window)
 {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-
 	glEnable(GL_DEPTH_TEST);
 	program = shaderLoader.CreateProgram("shaders/shader_9_1.vert", "shaders/shader_9_1.frag");
 	programTest = shaderLoader.CreateProgram("shaders/test.vert", "shaders/test.frag");
 	programSun = shaderLoader.CreateProgram("shaders/shader_8_sun.vert", "shaders/shader_8_sun.frag");
+<<<<<<< Updated upstream
 	programTex = shaderLoader.CreateProgram("shaders/shader_tex.vert", "shaders/shader_tex.frag");
+=======
+	programSkybox = shaderLoader.CreateProgram("shaders/shaderskybox.vert", "shaders/shaderskybox.frag");
+	programDepth = shaderLoader.CreateProgram("shaders/shader_depth.vert", "shaders/shader_depth.frag");
+>>>>>>> Stashed changes
 
 	loadModelToContext("./models/sphere.obj", sphereContext);
 	loadModelToContext("./models/spaceship.obj", shipContext);
@@ -338,6 +525,7 @@ void init(GLFWwindow* window)
 	loadModelToContext("./models/wall1.obj", models::wall1Context);
 	loadModelToContext("./models/wall2.obj", models::wall2Context);
 	loadModelToContext("./models/wall3.obj", models::wall3Context);
+<<<<<<< Updated upstream
 	loadModelToContext("./models/wall4.obj", models::wall4Context);*/
 	loadModelToContext("./models/bed.obj", models::bedContext);
 	loadModelToContext("./models/blanket.obj", models::blanketContext);
@@ -353,6 +541,10 @@ void init(GLFWwindow* window)
 	loadModelToContext("./models/pillows.obj", models::pillowsContext);
 	loadModelToContext("./models/wall_bed.obj", models::wall_bedContext);
 	loadModelToContext("./models/walls.obj", models::wallsContext);
+=======
+	loadModelToContext("./models/wall4.obj", models::wall4Context);
+	loadModelToContext("./models/cube.obj", models::cubeContext);
+>>>>>>> Stashed changes
 
 	/*texture::kot = Core::LoadTexture("./textures/toksa2.png");
 	texture::wood_floor = Core::LoadTexture("./textures/wood_floor.jpg");
@@ -361,6 +553,7 @@ void init(GLFWwindow* window)
 	texture::materace = Core::LoadTexture("./textures/materace.jpg");
 	texture::chairs = Core::LoadTexture("./textures/chairs.jpg");
 	texture::metal = Core::LoadTexture("./textures/metal.jpg");
+<<<<<<< Updated upstream
 	texture::bed = Core::LoadTexture("./textures/bed.jpg");*/
 
 	texture::floor = Core::LoadTexture("./textures/floor.jpg");
@@ -369,6 +562,11 @@ void init(GLFWwindow* window)
 	texture::blanket = Core::LoadTexture("./textures/blanket.jpg");
 	texture::smth = Core::LoadTexture("./textures/smth.jpg");
 
+=======
+	texture::bed = Core::LoadTexture("./textures/bed.jpg");
+	texture::fan = Core::LoadTexture("./textures/fan.jpg");
+	texture::lamp = Core::LoadTexture("./textures/lamp.jpg");
+>>>>>>> Stashed changes
 }
 
 
